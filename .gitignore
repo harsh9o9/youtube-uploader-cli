@@ -1,0 +1,66 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# Build output
+dist/
+build/
+out/
+
+# Dependency directories
+jspm_packages/
+
+# VS Code settings
+.vscode/
+
+# IntelliJ IDEA settings
+.idea/
+
+# MacOS system files
+.DS_Store
+
+# Linux system files
+.trash/
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+
+# YouTube API credentials and tokens
+*.json # If you have sensitive data in JSON files
+*.env # Environment files often contain sensitive info
+
+# Debugging and IDE files
+*.suo
+*.ntvs_analysis.dat
+*.history
+*.swp
+*.sublime-workspace
+*.sublime-project
+
+# Test coverage
+coverage/
+
+# Miscellaneous
+*.tgz
+*.zip
+*.tar.gz
+*.tar.bz2
+*.7z
+*.rar
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Additional files
+package-lock.json
+yarn.lock
