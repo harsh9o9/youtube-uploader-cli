@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import ora from "ora";
 import path from "path";
 import { getAuthToken } from "./auth.js";
-import { addToPlaylist, createPlaylist } from "./playlist.js";
+import { addToPlaylist, createPlaylist, getAllPlaylists } from "./playlist.js";
 import { uploadVideo } from "./upload.js";
 import {
   promptForExistingPlaylist,
@@ -10,6 +10,7 @@ import {
   promptForNewPlaylistName,
   promptForPlaylistChoice,
 } from "./utils/inquirerPrompts.js";
+import { logInfo } from "./utils/logger.js";
 
 async function uploadVideosFromFolder(folderPath) {
   const files = fs
@@ -24,12 +25,21 @@ async function uploadVideosFromFolder(folderPath) {
   let playlistId;
   if (choice === "new") {
     const playlistName = await promptForNewPlaylistName();
-    console.log("playlistName: ", playlistName);
-
     playlistId = await createPlaylist(auth, playlistName);
+  } else if (choice === "existing") {
+    // Get all existing playlists
+    const playlists = await getAllPlaylists(auth);
+
+    if (playlists.length === 0) {
+      logInfo("No existing playlists found. You need to create one.");
+      const playlistName = await promptForNewPlaylistName();
+      playlistId = await createPlaylist(oauth2Client, playlistName);
+    } else {
+      // Show existing playlists and let the user choose
+      playlistId = await promptForExistingPlaylist(playlists);
+    }
   } else {
-    // handle existing playlist logic
-    playlistId = await promptForExistingPlaylist(playlists);
+    throw new Error("Invalid choice");
   }
 
   const spinner = ora("Uploading videos...").start();

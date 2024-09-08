@@ -3,7 +3,7 @@ import { logSuccess } from "./utils/logger.js";
 
 export async function createPlaylist(auth, title) {
   console.log("title: ", title);
-  
+
   const youtube = google.youtube({ version: "v3", auth });
   const res = await youtube.playlists.insert({
     part: "snippet,status",
@@ -27,4 +27,31 @@ export async function addToPlaylist(auth, videoId, playlistId) {
   logSuccess(
     `Added video with id: ${videoId} to playlist with id: ${playlistId}`
   );
+}
+
+ // Function to get all playlists of the user
+export async function getAllPlaylists(auth) {
+  const youtube = google.youtube({ version: "v3", auth });
+  const playlists = [];
+  let nextPageToken = null;
+
+  do {
+    const res = await youtube.playlists.list({
+      part: "snippet",
+      mine: true,
+      maxResults: 50,
+      pageToken: nextPageToken,
+    });
+
+    res.data.items.forEach((item) => {
+      playlists.push({
+        id: item.id,
+        title: item.snippet.title,
+      });
+    });
+
+    nextPageToken = res.data.nextPageToken;
+  } while (nextPageToken);
+
+  return playlists;
 }
