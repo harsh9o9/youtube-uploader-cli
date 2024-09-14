@@ -31,3 +31,4 @@ A command-line interface (CLI) tool to upload videos to YouTube via the YouTube 
 npm install
 npm start
 ```
+![youtube-cli-demo](https://github.com/user-attachments/assets/7343d7aa-4e04-4d6d-844c-218cd3517418)
