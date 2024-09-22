@@ -8,6 +8,7 @@ import {
   promptForFolderPath,
   promptForNewPlaylistName,
   promptForPlaylistChoice,
+  promptForPlaylistDesc,
 } from "./utils/inquirerPrompts.js";
 import { logError, logInfo, logSuccess } from "./utils/logger.js";
 
@@ -19,6 +20,7 @@ async function uploadVideosFromFolder(folderPath) {
       .filter((file) =>
         [".mp4", ".mov", ".avi"].includes(path.extname(file).toLowerCase())
       );
+    const folderName = path.basename(folderPath);
 
     if (files.length === 0) {
       throw new Error("No video files found in the specified folder.");
@@ -29,16 +31,13 @@ async function uploadVideosFromFolder(folderPath) {
 
     let playlistId;
     if (choice === "new") {
-      const playlistName = await promptForNewPlaylistName();
-      playlistId = await createPlaylist(auth, playlistName);
+      playlistId = await getNewPlaylistId(auth, folderName);
     } else if (choice === "existing") {
-      // Get all existing playlists
       const playlists = await getAllPlaylists(auth);
 
       if (playlists.length === 0) {
         logInfo("No existing playlists found. You need to create one.");
-        const playlistName = await promptForNewPlaylistName();
-        playlistId = await createPlaylist(auth, playlistName);
+        playlistId = await getNewPlaylistId(auth, folderName);
       } else {
         // Show existing playlists and let the user choose
         playlistId = await promptForExistingPlaylist(playlists);
@@ -68,6 +67,13 @@ async function uploadVideosFromFolder(folderPath) {
   } catch (err) {
     logError(`Error during video upload process: ${err.message}`);
   }
+}
+
+async function getNewPlaylistId(auth, folderName) {
+  const playlistName = await promptForNewPlaylistName(folderName);
+  const playlistDesc = await promptForPlaylistDesc();
+  const playlistId = await createPlaylist(auth, playlistName, playlistDesc);
+  return playlistId;
 }
 
 // Prompt for folder path and start the process

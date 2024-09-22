@@ -25,13 +25,25 @@ export async function promptForFolderPath() {
   return answers.folderPath;
 }
 
-export async function promptForNewPlaylistName() {
-  const defaultPlaylistName = `Playlist ${getRandomInt(1000, 100000)}`;
+export async function promptForNewPlaylistName(folderName) {
+  const defaultPlaylistName = folderName
+    ? folderName
+    : `Playlist ${getRandomInt(1000, 100000)}`;
+
   const answers = await inquirer.prompt({
     type: "input",
     name: "name",
     message: "Enter new playlist name:",
     default: defaultPlaylistName,
+  });
+  return answers.name;
+}
+export async function promptForPlaylistDesc() {
+  const answers = await inquirer.prompt({
+    type: "input",
+    name: "playlistDesc",
+    message: "Enter new playlist Description:",
+    default: "Unlisted playlist created via CLI",
   });
   return answers.name;
 }

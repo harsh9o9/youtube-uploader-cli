@@ -1,14 +1,17 @@
 import { google } from "googleapis";
 import { logSuccess } from "./utils/logger.js";
 
-export async function createPlaylist(auth, title) {
+export async function createPlaylist(auth, title, playlistDesc) {
   console.log("title: ", title);
 
   const youtube = google.youtube({ version: "v3", auth });
   const res = await youtube.playlists.insert({
     part: "snippet,status",
     requestBody: {
-      snippet: { title, description: "Unlisted playlist created via CLI" },
+      snippet: {
+        title,
+        description: playlistDesc ?? "Unlisted playlist created via CLI",
+      },
       status: { privacyStatus: "unlisted" },
     },
   });
@@ -29,7 +32,7 @@ export async function addToPlaylist(auth, videoId, playlistId) {
   );
 }
 
- // Function to get all playlists of the user
+// Function to get all playlists of the user
 export async function getAllPlaylists(auth) {
   const youtube = google.youtube({ version: "v3", auth });
   const playlists = [];
